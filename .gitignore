@@ -1,0 +1,13 @@
+sample-logs/*.log
+aws_log_explorer_prompt.md
+blog.md
+
+# Go build output
+parser/parser
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
