@@ -1,9 +1,13 @@
 package parser
 
-// Strategy defines the interface for log line parsing strategies.
+type ParseResult struct {
+	Fields   map[string]string
+	Strategy string
+	Status   string
+}
+
+// Strategy defines the interface for log parsing strategies.
 type Strategy interface {
-	// Parse attempts to parse a log line into structured fields.
-	// Returns nil if this strategy cannot handle the line.
 	Parse(line string) map[string]string
 }
 
@@ -23,13 +27,33 @@ func New() *Parser {
 }
 
 // Parse runs the line through each strategy in order.
-// Returns structured fields from the first strategy that succeeds,
-// or a raw fallback map if none match.
-func (p *Parser) Parse(line string) map[string]string {
+func (p *Parser) Parse(line string) ParseResult {
 	for _, s := range p.strategies {
 		if result := s.Parse(line); result != nil {
-			return result
+
+			strategy := "unknown"
+
+			switch s.(type) {
+			case *JSONStrategy:
+				strategy = "json"
+			case *RegexStrategy:
+				strategy = "regex"
+			}
+
+			return ParseResult{
+				Fields:   result,
+				Strategy: strategy,
+				Status:   "parsed",
+			}
 		}
 	}
-	return map[string]string{"raw": line}
+
+	// fallback case
+	return ParseResult{
+		Fields: map[string]string{
+			"raw": line,
+		},
+		Strategy: "raw",
+		Status:   "fallback",
+	}
 }

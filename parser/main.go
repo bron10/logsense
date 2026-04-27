@@ -78,8 +78,12 @@ func processFile(path string, p *parser.Parser, client *loki.Client, jobLabel st
 	lines := tailer.Tail(path, pollInterval, done)
 
 	for line := range lines {
-		fields := p.Parse(line)
+		result := p.Parse(line)
+        fields := result.Fields
 
+        // metadata
+        fields["parse_strategy"] = result.Strategy
+        fields["parse_status"] = result.Status
 		// Build structured JSON line
 		structured, err := json.Marshal(fields)
 		if err != nil {
