@@ -80,9 +80,9 @@ func processFile(path string, p *parser.Parser, client *loki.Client, jobLabel st
 	for line := range lines {
 		result := p.Parse(line)
         fields := result.Fields
+        // metadata
         fields["parse_strategy"] = result.Strategy
         fields["parse_status"] = result.Status
-
 		// Build structured JSON line
 		structured, err := json.Marshal(fields)
 		if err != nil {
