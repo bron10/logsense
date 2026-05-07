@@ -1,22 +1,23 @@
 package parser
 
+// ParseResult is the structured output of parsing
 type ParseResult struct {
 	Fields   map[string]string
 	Strategy string
 	Status   string
 }
 
-// Strategy defines the interface for log parsing strategies.
+// Strategy defines the interface for parsing strategies
 type Strategy interface {
 	Parse(line string) map[string]string
 }
 
-// Parser chains multiple strategies and returns the first successful parse.
+// Parser chains multiple strategies
 type Parser struct {
 	strategies []Strategy
 }
 
-// New creates a Parser with the default strategy chain: JSON, then Regex.
+// New creates parser with JSON first, then Regex
 func New() *Parser {
 	return &Parser{
 		strategies: []Strategy{
@@ -26,10 +27,10 @@ func New() *Parser {
 	}
 }
 
-// Parse runs the line through each strategy in order.
+// Parse runs line through strategies and returns ParseResult
 func (p *Parser) Parse(line string) ParseResult {
 	for _, s := range p.strategies {
-		if result := s.Parse(line); result != nil {
+		if fields := s.Parse(line); fields != nil {
 
 			strategy := "unknown"
 
@@ -41,7 +42,7 @@ func (p *Parser) Parse(line string) ParseResult {
 			}
 
 			return ParseResult{
-				Fields:   result,
+				Fields:   fields,
 				Strategy: strategy,
 				Status:   "parsed",
 			}
