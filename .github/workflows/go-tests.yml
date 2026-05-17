@@ -1,0 +1,26 @@
+name: Go Tests
+
+on:
+  pull_request:
+    paths:
+      - 'parser/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: parser
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: parser/go.mod
+
+      - name: Run tests
+        run: go test ./...
