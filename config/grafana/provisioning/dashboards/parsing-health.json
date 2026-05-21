@@ -1,0 +1,47 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Parsed vs Fallback Logs",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "{job=\"logsense-parsed\"} | json | parse_status=\"parsed\"",
+          "refId": "A"
+        },
+        {
+          "expr": "{job=\"logsense-parsed\"} | json | parse_status=\"fallback\"",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "type": "piechart",
+      "title": "Logs by Parse Strategy",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "{job=\"logsense-parsed\"} | json",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "title": "Parsing Health Dashboard",
+  "version": 1
+}
