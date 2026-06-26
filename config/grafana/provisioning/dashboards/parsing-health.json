@@ -15,11 +15,11 @@
       },
       "targets": [
         {
-          "expr": "{job=\"logsense-parsed\"} | json | parse_status=\"parsed\"",
+          "expr": "sum(count_over_time({job=\"logsense-parsed\"} | json | parse_status=\"parsed\" [5m]))",
           "refId": "A"
         },
         {
-          "expr": "{job=\"logsense-parsed\"} | json | parse_status=\"fallback\"",
+          "expr": "sum(count_over_time({job=\"logsense-parsed\"} | json | parse_status=\"fallback\" [5m]))",
           "refId": "B"
         }
       ]
@@ -35,7 +35,39 @@
       },
       "targets": [
         {
-          "expr": "{job=\"logsense-parsed\"} | json",
+          "expr": "sum by (parse_strategy) (count_over_time({job=\"logsense-parsed\"} | json [5m]))",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "piechart",
+      "title": "Fallback Logs by Source",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum by (source) (count_over_time({job=\"logsense-parsed\"} | json | parse_status=\"fallback\" [5m]))",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "logs",
+      "title": "Recent Fallback Logs",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "{job=\"logsense-parsed\"} | json | parse_status=\"fallback\"",
           "refId": "A"
         }
       ]
@@ -43,5 +75,5 @@
   ],
   "schemaVersion": 39,
   "title": "Parsing Health Dashboard",
-  "version": 1
+  "version": 2
 }
